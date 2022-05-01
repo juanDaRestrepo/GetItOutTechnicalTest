@@ -10,7 +10,7 @@
         
 <style>
     .row{
-        margin-top: none;
+        
         height: 100%;
         margin-left: 12px;
         

@@ -26,7 +26,7 @@
     width: 600px;
   }
   .col-6{
-    margin-top: 100px;
+    margin-top: 60px;
   }
 
   h2{
@@ -67,6 +67,7 @@
     width: 25%;
     height: 7%;
     margin-top: 60px;
+    border:none;
   }
   ::-webkit-input-placeholder{
     color:white;

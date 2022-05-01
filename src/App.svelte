@@ -4,7 +4,7 @@
 </script>
 
 
-<main class='p-2 row'>
+<main class='row'>
 	<Header />
 	<MainContent />
 </main>
@@ -12,7 +12,7 @@
 
 <style>
 	main{
-		width: 95%;
+		
 		height: 100%;
 	}
 </style>
