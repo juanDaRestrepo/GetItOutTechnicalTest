@@ -1,5 +1,19 @@
 <script>
-	
+  import {addDoc,  collection} from 'firebase/firestore';
+  import {db} from '../../firebase';
+
+  import { emailValidator, requiredValidator } from './validations/validators'
+  import { createFieldValidator } from './validations/validation.js'
+
+  const [ validity, validate ] = createFieldValidator(requiredValidator(), emailValidator())
+
+  let formState = {};
+
+  const handleSubmit = async () => {
+    
+    const resp = await addDoc( collection(db,'users'), formState)
+  }
+
 </script>
 
   <div class="col-6 all-form row justify-content-center">
@@ -7,15 +21,53 @@
     <div class="container-title">
       <h2 class="text-center">ENTER THE DATA TO THE REGISTER</h2>
     </div>
-    <form class="d-flex align-items-center flex-column mb-3">
+    <form class="d-flex align-items-center flex-column mb-3" on:submit|preventDefault={handleSubmit}>
       <div class="mb-3 p-2 inputs d-flex justify-content-center">
-        <input type="text" class="border border-light"id="InputName" aria-describedby="user-name" placeholder="User Name">
+        <input 
+          type="text" 
+          class="border border-light"
+          id="InputName" 
+          aria-describedby="user-name" 
+          placeholder="User Name" 
+          bind:value={formState.userName}
+          class:field-danger={!$validity.valid}
+			    class:field-success={$validity.valid}
+          use:validate={formState.name}
+        >
       </div>
+      {#if $validity.dirty && !$validity.valid}
+        <span class="validation-hint">
+	        {$validity.message}
+        </span>
+      {/if} 
       <div class="mb-3 p-2 inputs d-flex justify-content-center">
-        <input type="email" class="border border-light" id="InputEmail" aria-describedby="user-email" placeholder="Email">
+        <input 
+          type="email" 
+          class="border border-light" 
+          id="InputEmail" 
+          aria-describedby="user-email" 
+          placeholder="Email" 
+          bind:value={formState.email}
+          class:field-danger={!$validity.valid}
+			    class:field-success={$validity.valid}
+          use:validate={formState.email}
+        >
+        
       </div>
+      {#if $validity.dirty && !$validity.valid}
+        <span class="validation-hint">
+	        {$validity.message}
+        </span>
+      {/if} 
       <div class="mb-3 p-2 inputs d-flex justify-content-center">
-        <input type="text"  class="border border-light" id="InputImage" aria-describedby="image-user-link" placeholder="Image Link">
+        <input 
+          type="text"  
+          class="border border-light" 
+          id="InputImage" 
+          aria-describedby="image-user-link" 
+          placeholder="Image Link" 
+          bind:value={formState.imageLink}
+        >
       </div>
       <button type="submit">SEND</button>
     </form>
@@ -84,4 +136,21 @@
   :-ms-input-placeholder{
     color:white;
   }
+ 
+	.validation-hint {
+		color: red;
+		position:relative;
+    right: 170px;
+    bottom: 10px
+    
+	}
+	
+	.field-danger {
+		border-color: red;
+	}
+	
+	.field-success {
+		border-color: green;
+	}
+
 </style>

@@ -1,24 +1,26 @@
 <script>
-
+    export let userName;
+    export let email;
+    export let imageLink;
 </script>
 
 <!-- ----------------------------------------------HTML CARD COMPONENT----------------------------------->
     
     <div class="col-6 shadow p-3 bg-body ">
         <div class="img-container">
-            <img src="https://www.ecestaticos.com/imagestatic/clipping/81b/3a0/81b3a03df43a3866a65a6fa8c3021345/15-senales-que-revelan-que-eres-buena-persona-y-los-demas-lo-notan.jpg?mtime=1622724997" class="card-img img-fluid" alt="...">
+            <img src={imageLink} class="card-img img-fluid" alt="...">
         </div>
         <div class="name text-center">
-            <h5 class="card-title">Mr. Jones</h5>
+            <h5 class="card-title">{userName}</h5>
         </div>
         <div class="name text-center">
-            <p>mrjones@gamil.com</p>
+            <p>{email}</p>
         </div>
         
       </div>
     
 
-<!-- ----------------------------- ---------------------------------------------------------------------->
+<!-- ---------------------------------------------------------------------------------------------------->
 
 <style>
     .col-6{
