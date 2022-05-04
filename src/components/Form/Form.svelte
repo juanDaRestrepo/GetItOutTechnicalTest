@@ -1,17 +1,23 @@
 <script>
   import {addDoc,  collection} from 'firebase/firestore';
   import {db} from '../../firebase';
+  
+  import validations from './validations';
+  
 
-  import { emailValidator, requiredValidator } from './validations/validators'
-  import { createFieldValidator } from './validations/validation.js'
+  let formState = {userName: '', email: '', imageLink: '', date: new Date().toString()};
+  $:({ userName_error, email_error, imageUrl_error } = validations(formState))
+  let recordedUser = false;
 
-  const [ validity, validate ] = createFieldValidator(requiredValidator(), emailValidator())
-
-  let formState = {};
-
-  const handleSubmit = async () => {
-    
-    const resp = await addDoc( collection(db,'users'), formState)
+  const handleSubmit =  () => {
+    if(userName_error.length<1 && email_error.length<1 && imageUrl_error<1 ){
+      const resp =  addDoc( collection(db,'users'), formState)
+      formState = {userName: '', email: '', imageLink: ''};
+      recordedUser = true;
+      setTimeout(()=>{
+        recordedUser = false;
+      },1000)
+    }
   }
 
 </script>
@@ -21,6 +27,7 @@
     <div class="container-title">
       <h2 class="text-center">ENTER THE DATA TO THE REGISTER</h2>
     </div>
+    
     <form class="d-flex align-items-center flex-column mb-3" on:submit|preventDefault={handleSubmit}>
       <div class="mb-3 p-2 inputs d-flex justify-content-center">
         <input 
@@ -30,16 +37,15 @@
           aria-describedby="user-name" 
           placeholder="User Name" 
           bind:value={formState.userName}
-          class:field-danger={!$validity.valid}
-			    class:field-success={$validity.valid}
-          use:validate={formState.name}
+          
         >
       </div>
-      {#if $validity.dirty && !$validity.valid}
-        <span class="validation-hint">
-	        {$validity.message}
-        </span>
-      {/if} 
+      {#if userName_error.length>0 && formState.userName.length > 0}
+      <div class="alert-error">
+        <span>{userName_error}</span>
+      </div>
+      {/if}
+      
       <div class="mb-3 p-2 inputs d-flex justify-content-center">
         <input 
           type="email" 
@@ -48,17 +54,15 @@
           aria-describedby="user-email" 
           placeholder="Email" 
           bind:value={formState.email}
-          class:field-danger={!$validity.valid}
-			    class:field-success={$validity.valid}
-          use:validate={formState.email}
+          
         >
         
       </div>
-      {#if $validity.dirty && !$validity.valid}
-        <span class="validation-hint">
-	        {$validity.message}
-        </span>
-      {/if} 
+      {#if email_error.length>0 && formState.email.length > 0}
+      <div class="alert-error-email">
+        <span>{email_error}</span> 
+      </div>
+      {/if}
       <div class="mb-3 p-2 inputs d-flex justify-content-center">
         <input 
           type="text"  
@@ -67,9 +71,21 @@
           aria-describedby="image-user-link" 
           placeholder="Image Link" 
           bind:value={formState.imageLink}
+          
         >
       </div>
+      {#if imageUrl_error.length>0 && formState.imageLink.length > 0}
+      <div class="alert-error-image">
+        <span>{imageUrl_error}</span>
+      </div>
+      {/if}
+      {#if recordedUser}
+      <div class="alert-success">
+        <span>User registered correctly</span>
+      </div>
+      {/if}
       <button type="submit">SEND</button>
+      
     </form>
   </div>
 
@@ -137,20 +153,31 @@
     color:white;
   }
  
-	.validation-hint {
-		color: red;
-		position:relative;
-    right: 170px;
-    bottom: 10px
-    
-	}
-	
-	.field-danger {
-		border-color: red;
-	}
-	
-	.field-success {
-		border-color: green;
-	}
-
+	.alert-error{
+    color: red;
+    font-weight: 500;
+    background-color: black;
+    margin-right: 160px;
+    margin-top: -10px;
+  }
+  .alert-error-email{
+    color: red;
+    font-weight: 500;
+    background-color: black;
+    margin-right: 400px;
+    margin-top: -10px;
+  }
+  .alert-error-image{
+    color: red;
+    font-weight: 500;
+    background-color: black;
+    margin-right: 420px;
+    margin-top: -10px;
+  }
+  .alert-success{
+    color:green;
+    font-weight: 500;
+    background-color: black;
+  }
+  
 </style>

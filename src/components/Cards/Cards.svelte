@@ -1,11 +1,12 @@
 <script>
-  import { collection, onSnapshot } from "firebase/firestore";
+  import { collection, limit, limitToLast, onSnapshot, orderBy, query, QuerySnapshot} from "firebase/firestore";
   import { db } from "../../firebase";
 
   import Card from "./Card.svelte";
 
   let users = [];
-  onSnapshot(
+  let userRecorded = false;
+  /* onSnapshot(
     collection(db, "users"),
     (querySnapshot) => {
       users = querySnapshot.docs.map((doc) => {
@@ -15,7 +16,22 @@
     (err) => {
       console.log(err);
     }
-  );
+  ); */
+  const update = () =>{
+    const q =  query(collection(db,'users'),orderBy('date'), limitToLast(10));
+    
+    onSnapshot(q,
+      (querySnapshot) => {
+        users = querySnapshot.docs.map((doc) => {
+        
+        return { ...doc.data(), id: doc.id };
+      });
+      },
+      (err) => {
+        console.log(err);
+      }
+    )
+  }
 </script>
 
 <div class="col-6 ml-3 container-module-cards row  justify-content-center ">
@@ -24,7 +40,7 @@
       <h2 class="text-center">UPDATE RECORDED DATA</h2>
     </div>
     <div class="container-cards row">
-      {#each users as user}
+      {#each users.reverse() as user}
         <Card 
             userName = {user.userName}
             email = {user.email} 
@@ -33,7 +49,7 @@
       {/each}
     </div>
   </div>
-  <button type="submit">UPDATE</button>
+  <button type="submit" on:click={update}>UPDATE</button>
   
 </div>
 
